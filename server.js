@@ -1,23 +1,22 @@
 const express = require('express');
-const path = require('path');
-const pairRouter = require('./pair');
-
-require('dotenv').config();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.set('views', path.join(__dirname, 'views'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-
-app.get('/', (req, res) => {
-    res.render('index');
+__path = process.cwd()
+const bodyParser = require("body-parser");
+const PORT = process.env.PORT || 8000;
+let code = require('./pair');
+require('events').EventEmitter.defaultMaxListeners = 500;
+app.use('/code', code);
+app.use('/',async (req, res, next) => {
+res.sendFile(__path + '/pair.html')
 });
-
-app.use('/pair', pairRouter);
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+    console.log(`
+Deployment Successful!
+
+ Gifted-Session-Server Running on http://localhost:` + PORT)
+})
+
+module.exports = app
+       
