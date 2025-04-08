@@ -1,22 +1,24 @@
 const express = require('express');
 const app = express();
-__path = process.cwd()
 const bodyParser = require("body-parser");
+const path = require('path');
 const PORT = process.env.PORT || 8000;
-let code = require('./pair');
 require('events').EventEmitter.defaultMaxListeners = 500;
-app.use('/code', code);
-app.use('/',async (req, res, next) => {
-res.sendFile(__path + '/pair.html')
-});
+
+const code = require('./pair');
+
+// Middleware to handle POST body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve the HTML page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'pair.html'));
+});
+
+// API route
+app.use('/code', code);
+
 app.listen(PORT, () => {
-    console.log(`
-Deployment Successful!
-
- Gifted-Session-Server Running on http://localhost:` + PORT)
-})
-
-module.exports = app
-       
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
